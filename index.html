@@ -1,151 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Can I Choose You?</title>
+<title>Gen 5 Capture</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-* { box-sizing: border-box; margin:0; padding:0; }
-body {
-  font-family: Arial, sans-serif;
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
   background:#111;
-  color:white;
   overflow:hidden;
+  font-family:'Press Start 2P', cursive;
+  color:white;
 }
 
-/* Intro */
-#intro {
+/* ================= DS FRAME ================= */
+
+#ds-frame{
   position:fixed;
   inset:0;
   display:flex;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
-  background:black;
-  z-index:100;
-}
-#intro button {
-  padding:12px 20px;
-  margin-top:20px;
-  border:none;
-  border-radius:10px;
-  background:crimson;
-  color:white;
-  cursor:pointer;
+  justify-content:center;
+  pointer-events:none;
+  z-index:1000;
 }
 
-/* Split Background */
-.split {
-  position:fixed;
+.screen{
+  width:90vw;
+  max-width:900px;
+  height:40vh;
+  background:black;
+  border:12px solid #333;
+  box-shadow:0 0 30px #000 inset;
+  position:relative;
+}
+
+#hinge{
+  width:120px;
+  height:20px;
+  background:#222;
+  border-radius:10px;
+  margin:10px 0;
+}
+
+/* ================= BACKGROUNDS ================= */
+
+.split{
+  position:absolute;
   top:0;
   bottom:0;
   width:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  overflow:hidden;
 }
-.left { left:0; background:#0a0f2b; }
-.right { right:0; background:#2b0000; }
-.split img { max-width:60%; }
 
-/* Battle Box */
-.battle-box {
-  position:fixed;
+.left{left:0;background:#0d1b3d;}
+.right{right:0;background:#3d0d0d;}
+
+.split img{
+  position:absolute;
   bottom:10%;
+  width:70%;
+  left:15%;
+  image-rendering:pixelated;
+}
+
+/* Lightning particles */
+.lightning{
+  position:absolute;
+  width:2px;
+  height:100%;
+  background:white;
+  opacity:0;
+  animation:flash 4s infinite;
+}
+
+@keyframes flash{
+  0%,95%,100%{opacity:0;}
+  96%{opacity:1;}
+}
+
+/* Fire particles */
+.fire{
+  position:absolute;
+  bottom:0;
+  width:4px;
+  height:4px;
+  background:orange;
+  border-radius:50%;
+  animation:rise 3s linear infinite;
+}
+
+@keyframes rise{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-200px);opacity:0;}
+}
+
+/* ================= TEXT BOX ================= */
+
+.battle-box{
+  position:absolute;
+  bottom:10px;
   left:50%;
   transform:translateX(-50%);
-  width:90%;
-  max-width:700px;
-  background:rgba(0,0,0,0.8);
+  width:95%;
+  max-width:850px;
+  background:black;
+  border:4px solid white;
   padding:20px;
-  border-radius:12px;
+  font-size:12px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  z-index:5;
 }
-.buttons button {
-  padding:10px 14px;
-  border-radius:10px;
-  border:none;
+
+.buttons button{
+  font-family:'Press Start 2P';
+  padding:8px;
+  border:3px solid white;
+  background:black;
+  color:white;
   cursor:pointer;
 }
-.yes { background:crimson; color:white; }
-.no { background:transparent; color:white; border:1px solid white; }
+.buttons button:hover{
+  background:white;
+  color:black;
+}
 
-/* Pokeball */
-#pokeball {
+/* ================= POKEBALL ================= */
+
+#pokeball{
   display:none;
-  position:fixed;
-  top:40%;
+  position:absolute;
+  top:35%;
   left:50%;
   transform:translate(-50%,-50%);
   width:120px;
-  height:120px;
-  border-radius:50%;
-  background:linear-gradient(red 50%, white 50%);
-  border:6px solid black;
-  z-index:50;
+  z-index:10;
 }
 
-/* Saving Screen */
-#saving {
+@keyframes drop{
+  from{top:-150px;opacity:0;}
+  to{top:35%;opacity:1;}
+}
+@keyframes shake{
+  0%{transform:translate(-50%,-50%) rotate(0);}
+  25%{transform:translate(-55%,-50%) rotate(-10deg);}
+  50%{transform:translate(-45%,-50%) rotate(10deg);}
+  75%{transform:translate(-55%,-50%) rotate(-8deg);}
+  100%{transform:translate(-50%,-50%) rotate(0);}
+}
+.shake{animation:shake .4s;}
+
+/* ================= SAVE SCREEN ================= */
+
+#saving{
   display:none;
-  position:fixed;
+  position:absolute;
   inset:0;
   background:black;
   color:white;
+  font-size:14px;
   justify-content:center;
   align-items:center;
   flex-direction:column;
-  font-size:22px;
-  z-index:200;
+  z-index:50;
 }
 
-/* Pokedex */
-#pokedex {
+/* ================= POKEDEX (BLACK/WHITE STYLE) ================= */
+
+#pokedex{
   display:none;
-  position:fixed;
+  position:absolute;
   inset:0;
-  background:crimson;
+  background:#cc0000;
+  border:10px solid #880000;
   color:white;
+  flex-direction:column;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
-  font-size:22px;
-  z-index:300;
+  font-size:12px;
+  z-index:60;
 }
 
-/* Animations */
-@keyframes drop {
-  from { top:-150px; opacity:0; }
-  to { top:40%; opacity:1; }
+#pokedex h2{
+  margin-bottom:20px;
+  border-bottom:3px solid white;
+  padding-bottom:10px;
 }
-@keyframes shake {
-  0% { transform:translate(-50%,-50%) rotate(0); }
-  25% { transform:translate(-55%,-50%) rotate(-15deg); }
-  50% { transform:translate(-45%,-50%) rotate(15deg); }
-  75% { transform:translate(-55%,-50%) rotate(-10deg); }
-  100% { transform:translate(-50%,-50%) rotate(0); }
+
+#pokedex button{
+  margin-top:30px;
+  padding:8px;
+  border:3px solid white;
+  background:black;
+  color:white;
+  cursor:pointer;
 }
-.shake { animation:shake 0.5s; }
+
 </style>
 </head>
 
 <body>
 
-<div id="intro">
-  <h1>In a world of Truth and Ideals...</h1>
-  <button onclick="startExperience()">Begin</button>
-</div>
-
-<audio id="bg-music" loop>
-  <source src="unova-theme.mp3" type="audio/mp3">
-</audio>
-
 <div class="split left">
   <img src="zekrom.png">
 </div>
+
 <div class="split right">
   <img src="reshiram.png">
 </div>
@@ -153,141 +217,131 @@ body {
 <div class="battle-box">
   <p id="dialogue"></p>
   <div class="buttons">
-    <button class="yes" onclick="sayYes()">Yes ❤️</button>
-    <button class="no" onmouseover="moveButton()" onclick="tryNo()">No</button>
+    <button onclick="sayYes()">YES</button>
+    <button id="noBtn" onmouseover="moveButton()">NO</button>
   </div>
 </div>
 
-<div id="pokeball"></div>
+<div id="pokeball">
+<svg viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="4"/>
+  <path d="M2 50 A48 48 0 0 1 98 50" fill="red"/>
+  <circle cx="50" cy="50" r="14" fill="white" stroke="black" stroke-width="4"/>
+  <circle cx="50" cy="50" r="6" fill="#ccc"/>
+</svg>
+</div>
 
 <div id="saving"></div>
 
 <div id="pokedex">
-  <h1>New Relationship Registered!</h1>
+  <h2>POKéDEX REGISTRATION</h2>
   <p id="pokedex-name"></p>
-  <button onclick="resetExperience()">Play Again</button>
+  <button onclick="location.reload()">CLOSE</button>
+</div>
+
+<div id="ds-frame">
+  <div class="screen"></div>
+  <div id="hinge"></div>
+  <div class="screen"></div>
 </div>
 
 <script>
-let girlName = "_blank";
-let text = `In a world of Truth and Ideals... I found someone legendary. ${girlName}... can I choose you? ❤️`;
-let i = 0;
-let speed = 40;
-let capturing = false;
 
-const dialogueEl = document.getElementById("dialogue");
-const introEl = document.getElementById("intro");
-const bgMusic = document.getElementById("bg-music");
-const pokeballEl = document.getElementById("pokeball");
-const savingEl = document.getElementById("saving");
-const pokedexEl = document.getElementById("pokedex");
-const pokedexNameEl = document.getElementById("pokedex-name");
-const yesBtn = document.querySelector(".yes");
-const noBtn = document.querySelector(".no");
+let girlName="Joey";
+let text=`In a world divided by Truth and Ideals... ${girlName}, will you join me?`;
+let i=0;
+let capturing=false;
 
-function startExperience() {
-  introEl.style.display="none";
-  bgMusic.play().catch(()=>{});
-  typeWriter();
-}
+const dialogue=document.getElementById("dialogue");
+const pokeball=document.getElementById("pokeball");
+const saving=document.getElementById("saving");
+const pokedex=document.getElementById("pokedex");
+const noBtn=document.getElementById("noBtn");
 
 function typeWriter(){
-  if(i < text.length){
-    dialogueEl.innerHTML += text.charAt(i);
+  if(i<text.length){
+    dialogue.innerHTML+=text.charAt(i);
     i++;
-    setTimeout(typeWriter, speed);
+    setTimeout(typeWriter,30);
   }
 }
+typeWriter();
 
+/* PARTICLES */
+function spawnLightning(){
+  const l=document.createElement("div");
+  l.className="lightning";
+  l.style.left=Math.random()*50+"%";
+  document.body.appendChild(l);
+  setTimeout(()=>l.remove(),4000);
+}
+setInterval(spawnLightning,3000);
+
+function spawnFire(){
+  const f=document.createElement("div");
+  f.className="fire";
+  f.style.left=(50+Math.random()*50)+"%";
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(),3000);
+}
+setInterval(spawnFire,500);
+
+/* CAPTURE */
 function sayYes(){
   if(capturing) return;
-  capturing = true;
-  yesBtn.disabled = true;
-  noBtn.disabled = true;
-
-  pokeballEl.style.display="block";
-  pokeballEl.style.animation="drop 1s forwards";
-  setTimeout(()=>shakeBall(1),1200);
+  capturing=true;
+  pokeball.style.display="block";
+  pokeball.style.animation="drop .8s forwards";
+  setTimeout(()=>shakeBall(1),1000);
 }
 
-function shakeBall(count){
-  if(count <=3){
-    pokeballEl.classList.add("shake");
+function shakeBall(c){
+  if(c<=3){
+    pokeball.classList.add("shake");
     setTimeout(()=>{
-      pokeballEl.classList.remove("shake");
-      setTimeout(()=>shakeBall(count+1),200);
-    },500);
+      pokeball.classList.remove("shake");
+      setTimeout(()=>shakeBall(c+1),200);
+    },400);
   } else {
-    showSaving();
+    showSave();
   }
 }
 
-function showSaving(){
-  savingEl.style.display="flex";
-  savingEl.innerHTML="<p id='savingText'>Saving...<br>Don't turn off the power.</p>";
-
+function showSave(){
+  saving.style.display="flex";
+  saving.innerHTML="<p id='s'>Saving...<br>Don't turn off the power.</p>";
   let dots=0;
-  const savingText=document.getElementById("savingText");
-
-  const interval=setInterval(()=>{
+  const s=document.getElementById("s");
+  const inter=setInterval(()=>{
     dots=(dots+1)%4;
-    savingText.innerHTML=`Saving${".".repeat(dots)}<br>Don't turn off the power.`;
+    s.innerHTML=`Saving${".".repeat(dots)}<br>Don't turn off the power.`;
   },500);
 
   setTimeout(()=>{
-    clearInterval(interval);
-    savingEl.innerHTML=`<p>Saving complete!<br>${girlName} was saved successfully! 💖</p>`;
+    clearInterval(inter);
+    saving.innerHTML=`<p>SAVE COMPLETE<br>${girlName} was registered.</p>`;
   },4000);
 
   setTimeout(()=>{
-    savingEl.style.display="none";
+    saving.style.display="none";
     showPokedex();
   },6000);
 }
 
 function showPokedex(){
-  pokedexNameEl.innerText=`${girlName} has been added to your Pokédex. 💖`;
-  pokedexEl.style.display="flex";
+  document.getElementById("pokedex-name").innerText=
+  `${girlName} has been added to your Pokédex!`;
+  pokedex.style.display="flex";
 }
 
 function moveButton(){
   if(capturing) return;
-  const bw=noBtn.offsetWidth;
-  const bh=noBtn.offsetHeight;
-  const left=Math.random()*(window.innerWidth-bw);
-  const top=Math.random()*(window.innerHeight-bh);
   noBtn.style.position="absolute";
-  noBtn.style.left=left+"px";
-  noBtn.style.top=top+"px";
+  noBtn.style.left=Math.random()*80+"%";
+  noBtn.style.top=Math.random()*80+"%";
 }
 
-function tryNo(){
-  if(capturing) return;
-  dialogueEl.innerHTML="You tried to refuse, but fate disagreed... 💫";
-  setTimeout(()=>{
-    noBtn.style.position="relative";
-    noBtn.style.left="";
-    noBtn.style.top="";
-    dialogueEl.innerHTML=text;
-  },1500);
-}
-
-function resetExperience(){
-  pokedexEl.style.display="none";
-  savingEl.style.display="none";
-  pokeballEl.style.display="none";
-  pokeballEl.style.animation="";
-  dialogueEl.innerHTML="";
-  i=0;
-  capturing=false;
-  yesBtn.disabled=false;
-  noBtn.disabled=false;
-  introEl.style.display="flex";
-  bgMusic.pause();
-  bgMusic.currentTime=0;
-}
 </script>
 
 </body>
-
 </html>
