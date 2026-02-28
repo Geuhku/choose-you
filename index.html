@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can I Choose You?</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- 🎬 Intro -->
+<div id="intro">
+    <h1>In a world divided by Truth and Ideals...</h1>
+    <button onclick="startExperience()">Begin</button>
+</div>
+
+<audio id="bg-music" loop>
+    <source src="unova-theme.mp3" type="audio/mp3">
+</audio>
+
+<!-- Split -->
+<div class="split left">
+    <div class="lightning"></div>
+    <img src="Zekrom.png">
+</div>
+
+<div class="split right">
+    <div class="fire"></div>
+    <img src="Reshiram.png">
+</div>
+
+<!-- 🎮 Battle Box -->
+<div class="battle-box">
+    <p id="dialogue"></p>
+    <div class="buttons">
+        <button class="yes" onclick="sayYes()">Yes ❤️</button>
+        <button class="no" onmouseover="moveButton()">No</button>
+    </div>
+</div>
+
+<!-- ⚪ Pokéball -->
+<div id="pokeball"></div>
+
+<!-- 💾 Saving Screen -->
+<div id="saving">
+    <p>Saving...<br>Don't turn off the power.</p>
+</div>
+
+<div id="pokedex">
+    <h1>New Relationship Registered!</h1>
+    <p>Joey has been added to your Pokédex. 💖</p>
+    <p>Status: Legendary Partner</p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
