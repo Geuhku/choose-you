@@ -1,55 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gen 5 Experience</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
-  background:#222;
-  font-family:'Press Start 2P', cursive;
-  overflow:hidden;
-}
-
-/* ===== DS FRAME ===== */
-.ds-frame{
-  position:absolute;
-  width:420px;
-  height:760px;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  background:#111;
-  border-radius:40px;
-  box-shadow:0 0 40px black;
-  padding:20px;
-}
-
-.screen{
-  width:100%;
-  height:320px;
   background:black;
-  border-radius:15px;
-  position:relative;
+  font-family:'Press Start 2P', cursive;
+  color:white;
   overflow:hidden;
-  border:5px solid #333;
 }
 
-/* Hinge */
-.hinge{
-  height:40px;
-  background:#000;
-  margin:15px 0;
-  border-radius:10px;
-}
-
-/* ===== Backgrounds ===== */
+/* Split backgrounds */
 .split{
-  position:absolute;
+  position:fixed;
   top:0;bottom:0;
   width:50%;
 }
@@ -57,7 +24,7 @@ body{
 .right{right:0;background:#3a0000;}
 .split img{
   position:absolute;
-  width:70%;
+  width:60%;
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
@@ -76,7 +43,7 @@ body{
   95%{opacity:1}
 }
 
-/* Fire particles */
+/* Fire */
 .fire{
   position:absolute;
   bottom:0;
@@ -88,21 +55,21 @@ body{
 }
 @keyframes rise{
   from{transform:translateY(0);opacity:1}
-  to{transform:translateY(-200px);opacity:0}
+  to{transform:translateY(-300px);opacity:0}
 }
 
-/* ===== Battle Text Box ===== */
+/* Battle box */
 .battle-box{
-  position:absolute;
-  bottom:10px;
+  position:fixed;
+  bottom:5%;
   left:50%;
   transform:translateX(-50%);
-  width:95%;
+  width:90%;
+  max-width:900px;
   background:black;
   border:4px solid white;
-  padding:15px;
-  font-size:10px;
-  color:white;
+  padding:25px;
+  font-size:12px;
   display:flex;
   justify-content:space-between;
 }
@@ -110,11 +77,11 @@ body{
 /* Buttons */
 button{
   font-family:'Press Start 2P';
-  font-size:9px;
-  padding:8px;
+  font-size:10px;
+  padding:10px;
+  border:3px solid white;
   background:black;
   color:white;
-  border:2px solid white;
   cursor:pointer;
 }
 button:hover{
@@ -125,16 +92,16 @@ button:hover{
 /* Pokeball */
 #pokeball{
   display:none;
-  position:absolute;
+  position:fixed;
   top:40%;
   left:50%;
   transform:translate(-50%,-50%);
-  width:80px;
+  width:100px;
 }
 
 /* Fade */
 #fade{
-  position:absolute;
+  position:fixed;
   inset:0;
   background:white;
   opacity:0;
@@ -142,123 +109,73 @@ button:hover{
   pointer-events:none;
 }
 
-/* ===== Saving ===== */
+/* Saving */
 #saving{
   display:none;
-  position:absolute;
+  position:fixed;
   inset:0;
   background:black;
   color:white;
   justify-content:center;
   align-items:center;
   flex-direction:column;
-  font-size:10px;
+  font-size:12px;
 }
 
-/* ===== Pokédex (Black/White style) ===== */
+/* Pokedex */
 #pokedex{
   display:none;
-  position:absolute;
+  position:fixed;
   inset:0;
   background:#cc0000;
-  color:white;
-  padding:20px;
-  font-size:10px;
+  padding:40px;
 }
-
 .dex-header{
   border-bottom:3px solid white;
   padding-bottom:10px;
-  margin-bottom:15px;
+  margin-bottom:20px;
 }
-
-.dex-body{
-  display:flex;
-  gap:15px;
-}
-
 .dex-entry{
-  font-size:8px;
+  font-size:10px;
   line-height:1.6;
-}
-
-/* Scanlines */
-.screen::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.03) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  pointer-events:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="ds-frame">
+<div class="split left"><img src="zekrom.png"></div>
+<div class="split right"><img src="reshiram.png"></div>
 
-  <!-- TOP SCREEN -->
-  <div class="screen" id="topScreen">
-    <div class="split left">
-      <img src="zekrom.png">
-    </div>
-    <div class="split right">
-      <img src="reshiram.png">
-    </div>
+<div id="fade"></div>
 
-    <div id="fade"></div>
-
-    <div id="pokeball">
-      <svg viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="4"/>
-        <path d="M2 50 A48 48 0 0 1 98 50" fill="red"/>
-        <circle cx="50" cy="50" r="14" fill="white" stroke="black" stroke-width="4"/>
-        <circle cx="50" cy="50" r="6" fill="#ccc"/>
-      </svg>
-    </div>
-  </div>
-
-  <div class="hinge"></div>
-
-  <!-- BOTTOM SCREEN -->
-  <div class="screen" id="bottomScreen">
-
-    <div class="battle-box">
-      <p id="dialogue"></p>
-      <div>
-        <button onclick="sayYes()">YES</button>
-        <button id="noBtn" onmouseover="moveButton()">NO</button>
-      </div>
-    </div>
-
-    <div id="saving"></div>
-
-    <div id="pokedex">
-      <div class="dex-header">POKéDEX ENTRY REGISTERED</div>
-      <div class="dex-body">
-        <div>
-          <svg width="80" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="4"/>
-            <path d="M2 50 A48 48 0 0 1 98 50" fill="red"/>
-          </svg>
-        </div>
-        <div class="dex-entry" id="dexText"></div>
-      </div>
-      <br>
-      <button onclick="location.reload()">CLOSE</button>
-    </div>
-
+<div class="battle-box">
+  <p id="dialogue"></p>
+  <div>
+    <button onclick="sayYes()">YES</button>
+    <button id="noBtn" onmouseover="moveButton()">NO</button>
   </div>
 </div>
 
+<div id="pokeball">
+<svg viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="4"/>
+  <path d="M2 50 A48 48 0 0 1 98 50" fill="red"/>
+  <circle cx="50" cy="50" r="14" fill="white" stroke="black" stroke-width="4"/>
+</svg>
+</div>
+
+<div id="saving"></div>
+
+<div id="pokedex">
+  <div class="dex-header">POKÉDEX ENTRY REGISTERED</div>
+  <div class="dex-entry" id="dexText"></div>
+  <br><br>
+  <button onclick="location.reload()">CLOSE</button>
+</div>
+
 <script>
-let girlName="Joey";
+let girlName="Blank";
 let text=`In a world divided by Truth and Ideals... ${girlName}, will you stand with me?`;
 let i=0;
 let capturing=false;
@@ -273,7 +190,6 @@ typeWriter();
 createLightning();
 createFire();
 
-/* Typewriter */
 function typeWriter(){
   if(i<text.length){
     dialogue.innerHTML+=text.charAt(i);
@@ -282,13 +198,11 @@ function typeWriter(){
   }
 }
 
-/* Capture */
 function sayYes(){
   if(capturing) return;
   capturing=true;
   pokeball.style.display="block";
-  pokeball.style.animation="drop 0.6s forwards";
-  setTimeout(()=>fadeToWhite(),1200);
+  setTimeout(()=>fadeToWhite(),1000);
 }
 
 function fadeToWhite(){
@@ -302,7 +216,6 @@ function fadeToWhite(){
 function showSaving(){
   saving.style.display="flex";
   saving.innerHTML="<p>Saving...<br>Don't turn off the power.</p>";
-
   setTimeout(()=>{
     saving.style.display="none";
     showDex();
@@ -314,33 +227,30 @@ function showDex(){
   document.getElementById("dexText").innerHTML=
     `${girlName}<br><br>
      The Legendary Partner Pokémon.<br>
-     Said to appear when Truth and Ideals are in balance.`;
+     Appears when Truth and Ideals align.`;
 }
 
-/* No button dodge */
 function moveButton(){
   if(capturing) return;
   const btn=document.getElementById("noBtn");
   btn.style.position="absolute";
-  btn.style.left=Math.random()*250+"px";
+  btn.style.left=Math.random()*400+"px";
   btn.style.top=Math.random()*200+"px";
 }
 
-/* Lightning */
 function createLightning(){
   const bolt=document.createElement("div");
   bolt.className="lightning";
-  bolt.style.left=Math.random()*150+"px";
+  bolt.style.left=Math.random()*200+"px";
   document.querySelector(".left").appendChild(bolt);
   setTimeout(()=>bolt.remove(),2000);
   setTimeout(createLightning,3000);
 }
 
-/* Fire */
 function createFire(){
   const ember=document.createElement("div");
   ember.className="fire";
-  ember.style.left=Math.random()*150+"px";
+  ember.style.left=Math.random()*200+"px";
   document.querySelector(".right").appendChild(ember);
   setTimeout(()=>ember.remove(),3000);
   setTimeout(createFire,500);
