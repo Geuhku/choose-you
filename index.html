@@ -1,358 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Can I Choose You?</title>
-  <style>
-    /* ====== Reset & base ====== */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: #111; color: #fff; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can I Choose You?</title>
 
-    /* ====== Intro ====== */
-    #intro {
-      position: fixed;
-      inset: 0;
-      display:flex;
-      flex-direction:column;
-      gap:20px;
-      justify-content:center;
-      align-items:center;
-      background: linear-gradient(180deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
-      z-index: 60;
-      text-align:center;
-      padding: 20px;
-    }
-    #intro h1 { font-size: clamp(20px, 4vw, 36px); line-height:1.1; }
-    #intro button {
-      padding: 12px 20px;
-      border-radius: 10px;
-      border: none;
-      background: crimson;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: Arial, sans-serif;
+  background:#111;
+  color:white;
+  overflow:hidden;
+}
 
-    /* ====== Split backgrounds (left/right) ====== */
-    .split {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      overflow: hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index: 1;
-    }
-    .split.left { left: 0; background: linear-gradient(180deg,#0b1020, #071127); }
-    .split.right { right: 0; background: linear-gradient(180deg,#130000, #2b0606); }
-    .split img { max-width: 60%; height: auto; opacity: 0.9; pointer-events:none; }
+/* Intro */
+#intro {
+  position:fixed;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background:black;
+  z-index:100;
+}
+#intro button {
+  padding:12px 20px;
+  margin-top:20px;
+  border:none;
+  border-radius:10px;
+  background:crimson;
+  color:white;
+  cursor:pointer;
+}
 
-    /* Decorative effects (lightning/fire placeholders) */
-    .lightning, .fire { position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none; opacity:0.15; }
-    .lightning { background-image: radial-gradient(circle at 20% 10%, rgba(180,220,255,0.08), transparent 8%); }
-    .fire { background-image: radial-gradient(circle at 80% 90%, rgba(255,180,140,0.06), transparent 10%); }
+/* Split Background */
+.split {
+  position:fixed;
+  top:0;
+  bottom:0;
+  width:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.left { left:0; background:#0a0f2b; }
+.right { right:0; background:#2b0000; }
+.split img { max-width:60%; }
 
-    /* ====== Battle box (center) ====== */
-    .battle-box {
-      position: fixed;
-      left: 50%;
-      top: 60%;
-      transform: translate(-50%, -50%);
-      width: min(760px, 92%);
-      background: rgba(10,10,10,0.7);
-      border: 2px solid rgba(255,255,255,0.06);
-      border-radius: 14px;
-      padding: 18px;
-      z-index: 30;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content: space-between;
-      backdrop-filter: blur(4px);
-    }
-    #dialogue { flex:1; font-size: 18px; min-height: 48px; line-height:1.2; color: #fff; }
-    .buttons { display:flex; gap:10px; align-items:center; }
-    .buttons button {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .yes {
-      background: crimson;
-      color: white;
-      animation: pulse 2s infinite;
-    }
-    .no {
-      background: transparent;
-      color: #ddd;
-      border: 1px solid rgba(255,255,255,0.08);
-      position: relative;
-    }
+/* Battle Box */
+.battle-box {
+  position:fixed;
+  bottom:10%;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:700px;
+  background:rgba(0,0,0,0.8);
+  padding:20px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.buttons button {
+  padding:10px 14px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+}
+.yes { background:crimson; color:white; }
+.no { background:transparent; color:white; border:1px solid white; }
 
-    /* ====== Pokeball (capture) ====== */
-    #pokeball {
-      display: none;
-      position: fixed;
-      left: 50%;
-      top: 40%;
-      transform: translate(-50%,-50%);
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 6px solid #111;
-      background: linear-gradient(180deg, #e33 0%, #c11 52%, #fff 52%, #eee 100%);
-      z-index: 40;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    #pokeball::after {
-      content:"";
-      position:absolute;
-      width:52%;
-      height:26%;
-      background:#000;
-      border-radius:6px;
-      top:46%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      border:4px solid #fff;
-      box-shadow: inset 0 -4px 8px rgba(0,0,0,0.3);
-    }
+/* Pokeball */
+#pokeball {
+  display:none;
+  position:fixed;
+  top:40%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:linear-gradient(red 50%, white 50%);
+  border:6px solid black;
+  z-index:50;
+}
 
-    /* ====== Saving / Pokedex screens ====== */
-    #saving, #pokedex {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      z-index: 50;
-      font-size: 20px;
-      padding: 20px;
-    }
-    #saving { background: rgba(0,0,0,0.85); color:#fff; }
-    #pokedex { background: crimson; color: white; }
+/* Saving Screen */
+#saving {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:black;
+  color:white;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  font-size:22px;
+  z-index:200;
+}
 
-    /* ====== Animations from your file (drop, shake, flash, pulse) ====== */
-    @keyframes drop {
-      from { top: -150px; opacity: 0; transform: translate(-50%, 0) scale(0.6); }
-      to   { top: 40%; opacity: 1; transform: translate(-50%,-50%) scale(1); }
-    }
-    @keyframes shake {
-      0% { transform: translateX(-50%) rotate(0deg); }
-      25% { transform: translateX(-55%) rotate(-12deg); }
-      50% { transform: translateX(-45%) rotate(12deg); }
-      75% { transform: translateX(-55%) rotate(-8deg); }
-      100% { transform: translateX(-50%) rotate(0deg); }
-    }
-    .shake { animation: shake 0.5s ease; }
+/* Pokedex */
+#pokedex {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:crimson;
+  color:white;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  font-size:22px;
+  z-index:300;
+}
 
-    @keyframes flashWhite {
-      0% { background: transparent; }
-      50% { background: white; }
-      100% { background: transparent; }
-    }
-    .flash { animation: flashWhite 0.6s ease; }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 8px crimson; }
-      50% { box-shadow: 0 0 22px pink; transform: scale(1.02); }
-      100% { box-shadow: 0 0 8px crimson; transform: scale(1); }
-    }
-
-    /* small screens */
-    @media (max-width:600px) {
-      .split img { max-width: 80%; }
-      .battle-box { top: 68%; padding:12px; font-size: 14px; }
-      #pokeball { width: 96px; height: 96px; }
-    }
-  </style>
+/* Animations */
+@keyframes drop {
+  from { top:-150px; opacity:0; }
+  to { top:40%; opacity:1; }
+}
+@keyframes shake {
+  0% { transform:translate(-50%,-50%) rotate(0); }
+  25% { transform:translate(-55%,-50%) rotate(-15deg); }
+  50% { transform:translate(-45%,-50%) rotate(15deg); }
+  75% { transform:translate(-55%,-50%) rotate(-10deg); }
+  100% { transform:translate(-50%,-50%) rotate(0); }
+}
+.shake { animation:shake 0.5s; }
+</style>
 </head>
+
 <body>
-  <!-- Intro -->
-  <div id="intro" role="dialog" aria-modal="true">
-    <h1>In a world divided by Truth and Ideals...</h1>
-    <button id="startBtn" onclick="startExperience()">Begin</button>
+
+<div id="intro">
+  <h1>In a world of Truth and Ideals...</h1>
+  <button onclick="startExperience()">Begin</button>
+</div>
+
+<audio id="bg-music" loop>
+  <source src="unova-theme.mp3" type="audio/mp3">
+</audio>
+
+<div class="split left">
+  <img src="zekrom.png">
+</div>
+<div class="split right">
+  <img src="reshiram.png">
+</div>
+
+<div class="battle-box">
+  <p id="dialogue"></p>
+  <div class="buttons">
+    <button class="yes" onclick="sayYes()">Yes ❤️</button>
+    <button class="no" onmouseover="moveButton()" onclick="tryNo()">No</button>
   </div>
+</div>
 
-  <!-- Background music (played on user click) -->
-  <audio id="bg-music" loop preload="auto">
-    <source src="unova-theme.mp3" type="audio/mp3">
-  </audio>
+<div id="pokeball"></div>
 
-  <!-- Split art -->
-  <div class="split left">
-    <div class="lightning" aria-hidden="true"></div>
-    <img src="zekrom.png" alt="Zekrom">
-  </div>
-  <div class="split right">
-    <div class="fire" aria-hidden="true"></div>
-    <img src="reshiram.png" alt="Reshiram">
-  </div>
+<div id="saving"></div>
 
-  <!-- Battle box -->
-  <div class="battle-box" role="region" aria-label="Choice">
-    <p id="dialogue" aria-live="polite"></p>
-    <div class="buttons">
-      <button class="yes" onclick="sayYes()">Yes ❤️</button>
-      <button class="no" onmouseover="moveButton()" onclick="tryNo()">No</button>
-    </div>
-  </div>
+<div id="pokedex">
+  <h1>New Relationship Registered!</h1>
+  <p id="pokedex-name"></p>
+  <button onclick="resetExperience()">Play Again</button>
+</div>
 
-  <!-- Pokéball -->
-  <div id="pokeball" aria-hidden="true"></div>
+<script>
+let girlName = "Joey";
+let text = `In a world of Truth and Ideals... I found someone legendary. ${girlName}... can I choose you? ❤️`;
+let i = 0;
+let speed = 40;
+let capturing = false;
 
-  <!-- Saving & Pokedex -->
-  <div id="saving" aria-live="polite"><p>Saving...<br>Don't turn off the power.</p></div>
-  <div id="pokedex" role="dialog" aria-modal="true">
-    <h1>New Relationship Registered!</h1>
-    <p id="pokedex-name">Joey has been added to your Pokédex. 💖</p>
-    <p>Status: Legendary Partner</p>
-    <p style="margin-top:18px;"><button onclick="resetExperience()" style="padding:10px 14px;border-radius:10px;border:none;background:white;color:crimson;cursor:pointer;">Play again</button></p>
-  </div>
+const dialogueEl = document.getElementById("dialogue");
+const introEl = document.getElementById("intro");
+const bgMusic = document.getElementById("bg-music");
+const pokeballEl = document.getElementById("pokeball");
+const savingEl = document.getElementById("saving");
+const pokedexEl = document.getElementById("pokedex");
+const pokedexNameEl = document.getElementById("pokedex-name");
+const yesBtn = document.querySelector(".yes");
+const noBtn = document.querySelector(".no");
 
-  <script>
-    // ====== Text + vars ======
-    let girlName = "Joey";
-    let text = `In a world of Truth and Ideals... I found someone legendary. ${girlName}... can I choose you? ❤️`;
-    let i = 0;
-    let speed = 40;
-    const dialogueEl = document.getElementById("dialogue");
-    const introEl = document.getElementById("intro");
-    const bgMusic = document.getElementById("bg-music");
-    const pokeballEl = document.getElementById("pokeball");
-    const savingEl = document.getElementById("saving");
-    const pokedexEl = document.getElementById("pokedex");
-    const pokedexNameEl = document.getElementById("pokedex-name");
+function startExperience() {
+  introEl.style.display="none";
+  bgMusic.play().catch(()=>{});
+  typeWriter();
+}
 
-    // ====== Start experience ======
-    function startExperience() {
-      // hide intro and start music + typewriter
-      introEl.style.display = "none";
-      // attempt to play music (user interaction triggered)
-      bgMusic.play().catch(() => { /* some browsers may still block but it's okay */ });
-      typeWriter();
-    }
+function typeWriter(){
+  if(i < text.length){
+    dialogueEl.innerHTML += text.charAt(i);
+    i++;
+    setTimeout(typeWriter, speed);
+  }
+}
 
-    // ====== Typewriter ======
-    function typeWriter() {
-      if (i < text.length) {
-        dialogueEl.innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
-      }
-    }
+function sayYes(){
+  if(capturing) return;
+  capturing = true;
+  yesBtn.disabled = true;
+  noBtn.disabled = true;
 
-    // ====== Yes (capture) ======
-    function sayYes() {
-      // show pokeball and drop it
-      pokeballEl.style.display = "block";
-      pokeballEl.style.animation = "drop 1s forwards";
-      // begin shakes after drop finishes
-      setTimeout(() => shakeBall(1), 1200);
-    }
+  pokeballEl.style.display="block";
+  pokeballEl.style.animation="drop 1s forwards";
+  setTimeout(()=>shakeBall(1),1200);
+}
 
-    function shakeBall(count) {
-      if (count <= 3) {
-        pokeballEl.classList.add("shake");
-        setTimeout(() => {
-          pokeballEl.classList.remove("shake");
-          setTimeout(() => shakeBall(count + 1), 140);
-        }, 500);
-      } else {
-        captureSuccess();
-      }
-    }
+function shakeBall(count){
+  if(count <=3){
+    pokeballEl.classList.add("shake");
+    setTimeout(()=>{
+      pokeballEl.classList.remove("shake");
+      setTimeout(()=>shakeBall(count+1),200);
+    },500);
+  } else {
+    showSaving();
+  }
+}
 
-    function captureSuccess() {
-      // quick flash
-      document.body.classList.add("flash");
-      setTimeout(() => {
-        document.body.classList.remove("flash");
-        // show saving screen
-        savingEl.style.display = "flex";
-        savingEl.style.flexDirection = "column";
-        savingEl.style.alignItems = "center";
-        savingEl.style.justifyContent = "center";
-      }, 600);
+function showSaving(){
+  savingEl.style.display="flex";
+  savingEl.innerHTML="<p id='savingText'>Saving...<br>Don't turn off the power.</p>";
 
-      // update saving text after a bit
-      setTimeout(() => {
-        savingEl.innerHTML = `<p>Saving...<br>${girlName} was saved successfully! 💖</p>`;
-      }, 2500);
+  let dots=0;
+  const savingText=document.getElementById("savingText");
 
-      // finally show pokedex
-      setTimeout(() => {
-        savingEl.style.display = "none";
-        pokedexNameEl.innerText = `${girlName} has been added to your Pokédex. 💖`;
-        pokedexEl.style.display = "flex";
-        pokedexEl.style.flexDirection = "column";
-        pokedexEl.style.justifyContent = "center";
-        pokedexEl.style.alignItems = "center";
-      }, 4500);
-    }
+  const interval=setInterval(()=>{
+    dots=(dots+1)%4;
+    savingText.innerHTML=`Saving${".".repeat(dots)}<br>Don't turn off the power.`;
+  },500);
 
-    // ====== No button (playful) ======
-    function randomBetween(min, max) { return Math.random() * (max - min) + min; }
+  setTimeout(()=>{
+    clearInterval(interval);
+    savingEl.innerHTML=`<p>Saving complete!<br>${girlName} was saved successfully! 💖</p>`;
+  },4000);
 
-    function moveButton() {
-      const button = document.querySelector(".no");
-      // compute safe bounds so button doesn't go off-screen
-      const bw = button.offsetWidth, bh = button.offsetHeight;
-      const margin = 12;
-      const maxLeft = Math.max(margin, window.innerWidth - bw - margin);
-      const maxTop = Math.max(margin, window.innerHeight - bh - margin);
-      const left = randomBetween(margin, maxLeft);
-      const top = randomBetween(margin, maxTop);
-      // apply absolute positioning
-      button.style.position = "absolute";
-      button.style.left = left + "px";
-      button.style.top = top + "px";
-    }
+  setTimeout(()=>{
+    savingEl.style.display="none";
+    showPokedex();
+  },6000);
+}
 
-    // clicking "No" can also trigger a small message / effect if user manages to click
-    function tryNo() {
-      // small playful message
-      dialogueEl.innerHTML = "You tried to refuse, but fate disagreed... 💫";
-      // reset button back after a moment
-      setTimeout(() => {
-        const noBtn = document.querySelector(".no");
-        noBtn.style.position = "relative";
-        noBtn.style.left = "";
-        noBtn.style.top = "";
-        dialogueEl.innerHTML = text; // restore original text quickly (or optionally continue)
-      }, 1400);
-    }
+function showPokedex(){
+  pokedexNameEl.innerText=`${girlName} has been added to your Pokédex. 💖`;
+  pokedexEl.style.display="flex";
+}
 
-    // ====== Reset to play again ======
-    function resetExperience() {
-      // reset state
-      pokedexEl.style.display = "none";
-      pokeballEl.style.display = "none";
-      dialogueEl.innerHTML = "";
-      i = 0;
-      document.getElementById("intro").style.display = "flex";
-      // stop music and rewind
-      bgMusic.pause();
-      bgMusic.currentTime = 0;
-    }
+function moveButton(){
+  if(capturing) return;
+  const bw=noBtn.offsetWidth;
+  const bh=noBtn.offsetHeight;
+  const left=Math.random()*(window.innerWidth-bw);
+  const top=Math.random()*(window.innerHeight-bh);
+  noBtn.style.position="absolute";
+  noBtn.style.left=left+"px";
+  noBtn.style.top=top+"px";
+}
 
-    // Accessibility: allow keyboard to trigger start
-    document.getElementById("startBtn").addEventListener("keydown", function(e){
-      if(e.key === "Enter" || e.key === " ") startExperience();
-    });
-  </script>
+function tryNo(){
+  if(capturing) return;
+  dialogueEl.innerHTML="You tried to refuse, but fate disagreed... 💫";
+  setTimeout(()=>{
+    noBtn.style.position="relative";
+    noBtn.style.left="";
+    noBtn.style.top="";
+    dialogueEl.innerHTML=text;
+  },1500);
+}
+
+function resetExperience(){
+  pokedexEl.style.display="none";
+  savingEl.style.display="none";
+  pokeballEl.style.display="none";
+  pokeballEl.style.animation="";
+  dialogueEl.innerHTML="";
+  i=0;
+  capturing=false;
+  yesBtn.disabled=false;
+  noBtn.disabled=false;
+  introEl.style.display="flex";
+  bgMusic.pause();
+  bgMusic.currentTime=0;
+}
+</script>
+
 </body>
 </html>
