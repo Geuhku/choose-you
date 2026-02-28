@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can I Choose You?</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<audio id="bg-music" autoplay loop>
+    <source src="audio/unova-theme.mp3" type="audio/mp3">
+</audio>
+
+<div class="split left">
+    <div class="lightning"></div>
+    <img src="images/zekrom.png" alt="Zekrom">
+</div>
+
+<div class="split right">
+    <div class="fire"></div>
+    <img src="images/reshiram.png" alt="Reshiram">
+</div>
+
+<div class="battle-box">
+    <p id="dialogue">
+        In a world of Truth and Ideals...  
+        I found someone legendary.
+        <br><br>
+        Can I choose you?
+    </p>
+
+    <div class="buttons">
+        <button class="yes" onclick="sayYes()">Yes ❤️</button>
+        <button class="no" onmouseover="moveButton()">No</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
