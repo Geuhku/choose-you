@@ -1,346 +1,350 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Gen 5 Capture</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gen 5 Experience</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box}
 body{
-  background:#111;
-  overflow:hidden;
+  background:#222;
   font-family:'Press Start 2P', cursive;
-  color:white;
+  overflow:hidden;
 }
 
-/* ================= DS FRAME ================= */
-
-#ds-frame{
-  position:fixed;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
-  z-index:1000;
+/* ===== DS FRAME ===== */
+.ds-frame{
+  position:absolute;
+  width:420px;
+  height:760px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  background:#111;
+  border-radius:40px;
+  box-shadow:0 0 40px black;
+  padding:20px;
 }
 
 .screen{
-  width:90vw;
-  max-width:900px;
-  height:40vh;
+  width:100%;
+  height:320px;
   background:black;
-  border:12px solid #333;
-  box-shadow:0 0 30px #000 inset;
+  border-radius:15px;
   position:relative;
+  overflow:hidden;
+  border:5px solid #333;
 }
 
-#hinge{
-  width:120px;
-  height:20px;
-  background:#222;
+/* Hinge */
+.hinge{
+  height:40px;
+  background:#000;
+  margin:15px 0;
   border-radius:10px;
-  margin:10px 0;
 }
 
-/* ================= BACKGROUNDS ================= */
-
+/* ===== Backgrounds ===== */
 .split{
   position:absolute;
-  top:0;
-  bottom:0;
+  top:0;bottom:0;
   width:50%;
-  overflow:hidden;
 }
-
-.left{left:0;background:#0d1b3d;}
-.right{right:0;background:#3d0d0d;}
-
+.left{left:0;background:#0a1535;}
+.right{right:0;background:#3a0000;}
 .split img{
   position:absolute;
-  bottom:10%;
   width:70%;
-  left:15%;
-  image-rendering:pixelated;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
 }
 
-/* Lightning particles */
+/* Lightning */
 .lightning{
   position:absolute;
-  width:2px;
+  width:3px;
   height:100%;
-  background:white;
-  opacity:0;
-  animation:flash 4s infinite;
+  background:rgba(255,255,255,0.4);
+  animation:flash 2s infinite;
 }
-
 @keyframes flash{
-  0%,95%,100%{opacity:0;}
-  96%{opacity:1;}
+  0%,90%,100%{opacity:0}
+  95%{opacity:1}
 }
 
 /* Fire particles */
 .fire{
   position:absolute;
   bottom:0;
-  width:4px;
-  height:4px;
+  width:6px;
+  height:6px;
   background:orange;
   border-radius:50%;
   animation:rise 3s linear infinite;
 }
-
 @keyframes rise{
-  from{transform:translateY(0);opacity:1;}
-  to{transform:translateY(-200px);opacity:0;}
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-200px);opacity:0}
 }
 
-/* ================= TEXT BOX ================= */
-
+/* ===== Battle Text Box ===== */
 .battle-box{
   position:absolute;
   bottom:10px;
   left:50%;
   transform:translateX(-50%);
   width:95%;
-  max-width:850px;
   background:black;
   border:4px solid white;
-  padding:20px;
-  font-size:12px;
+  padding:15px;
+  font-size:10px;
+  color:white;
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  z-index:5;
 }
 
-.buttons button{
+/* Buttons */
+button{
   font-family:'Press Start 2P';
+  font-size:9px;
   padding:8px;
-  border:3px solid white;
   background:black;
   color:white;
+  border:2px solid white;
   cursor:pointer;
 }
-.buttons button:hover{
+button:hover{
   background:white;
   color:black;
 }
 
-/* ================= POKEBALL ================= */
-
+/* Pokeball */
 #pokeball{
   display:none;
   position:absolute;
-  top:35%;
+  top:40%;
   left:50%;
   transform:translate(-50%,-50%);
-  width:120px;
-  z-index:10;
+  width:80px;
 }
 
-@keyframes drop{
-  from{top:-150px;opacity:0;}
-  to{top:35%;opacity:1;}
+/* Fade */
+#fade{
+  position:absolute;
+  inset:0;
+  background:white;
+  opacity:0;
+  transition:0.6s;
+  pointer-events:none;
 }
-@keyframes shake{
-  0%{transform:translate(-50%,-50%) rotate(0);}
-  25%{transform:translate(-55%,-50%) rotate(-10deg);}
-  50%{transform:translate(-45%,-50%) rotate(10deg);}
-  75%{transform:translate(-55%,-50%) rotate(-8deg);}
-  100%{transform:translate(-50%,-50%) rotate(0);}
-}
-.shake{animation:shake .4s;}
 
-/* ================= SAVE SCREEN ================= */
-
+/* ===== Saving ===== */
 #saving{
   display:none;
   position:absolute;
   inset:0;
   background:black;
   color:white;
-  font-size:14px;
   justify-content:center;
   align-items:center;
   flex-direction:column;
-  z-index:50;
+  font-size:10px;
 }
 
-/* ================= POKEDEX (BLACK/WHITE STYLE) ================= */
-
+/* ===== Pokédex (Black/White style) ===== */
 #pokedex{
   display:none;
   position:absolute;
   inset:0;
   background:#cc0000;
-  border:10px solid #880000;
   color:white;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-size:12px;
-  z-index:60;
+  padding:20px;
+  font-size:10px;
 }
 
-#pokedex h2{
-  margin-bottom:20px;
+.dex-header{
   border-bottom:3px solid white;
   padding-bottom:10px;
+  margin-bottom:15px;
 }
 
-#pokedex button{
-  margin-top:30px;
-  padding:8px;
-  border:3px solid white;
-  background:black;
-  color:white;
-  cursor:pointer;
+.dex-body{
+  display:flex;
+  gap:15px;
 }
 
+.dex-entry{
+  font-size:8px;
+  line-height:1.6;
+}
+
+/* Scanlines */
+.screen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events:none;
+}
 </style>
 </head>
 
 <body>
 
-<div class="split left">
-  <img src="zekrom.png">
-</div>
+<div class="ds-frame">
 
-<div class="split right">
-  <img src="reshiram.png">
-</div>
+  <!-- TOP SCREEN -->
+  <div class="screen" id="topScreen">
+    <div class="split left">
+      <img src="zekrom.png">
+    </div>
+    <div class="split right">
+      <img src="reshiram.png">
+    </div>
 
-<div class="battle-box">
-  <p id="dialogue"></p>
-  <div class="buttons">
-    <button onclick="sayYes()">YES</button>
-    <button id="noBtn" onmouseover="moveButton()">NO</button>
+    <div id="fade"></div>
+
+    <div id="pokeball">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="4"/>
+        <path d="M2 50 A48 48 0 0 1 98 50" fill="red"/>
+        <circle cx="50" cy="50" r="14" fill="white" stroke="black" stroke-width="4"/>
+        <circle cx="50" cy="50" r="6" fill="#ccc"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hinge"></div>
+
+  <!-- BOTTOM SCREEN -->
+  <div class="screen" id="bottomScreen">
+
+    <div class="battle-box">
+      <p id="dialogue"></p>
+      <div>
+        <button onclick="sayYes()">YES</button>
+        <button id="noBtn" onmouseover="moveButton()">NO</button>
+      </div>
+    </div>
+
+    <div id="saving"></div>
+
+    <div id="pokedex">
+      <div class="dex-header">POKéDEX ENTRY REGISTERED</div>
+      <div class="dex-body">
+        <div>
+          <svg width="80" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="4"/>
+            <path d="M2 50 A48 48 0 0 1 98 50" fill="red"/>
+          </svg>
+        </div>
+        <div class="dex-entry" id="dexText"></div>
+      </div>
+      <br>
+      <button onclick="location.reload()">CLOSE</button>
+    </div>
+
   </div>
 </div>
 
-<div id="pokeball">
-<svg viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="48" fill="white" stroke="black" stroke-width="4"/>
-  <path d="M2 50 A48 48 0 0 1 98 50" fill="red"/>
-  <circle cx="50" cy="50" r="14" fill="white" stroke="black" stroke-width="4"/>
-  <circle cx="50" cy="50" r="6" fill="#ccc"/>
-</svg>
-</div>
-
-<div id="saving"></div>
-
-<div id="pokedex">
-  <h2>POKéDEX REGISTRATION</h2>
-  <p id="pokedex-name"></p>
-  <button onclick="location.reload()">CLOSE</button>
-</div>
-
-<div id="ds-frame">
-  <div class="screen"></div>
-  <div id="hinge"></div>
-  <div class="screen"></div>
-</div>
-
 <script>
-
 let girlName="Joey";
-let text=`In a world divided by Truth and Ideals... ${girlName}, will you join me?`;
+let text=`In a world divided by Truth and Ideals... ${girlName}, will you stand with me?`;
 let i=0;
 let capturing=false;
 
 const dialogue=document.getElementById("dialogue");
 const pokeball=document.getElementById("pokeball");
+const fade=document.getElementById("fade");
 const saving=document.getElementById("saving");
 const pokedex=document.getElementById("pokedex");
-const noBtn=document.getElementById("noBtn");
 
+typeWriter();
+createLightning();
+createFire();
+
+/* Typewriter */
 function typeWriter(){
   if(i<text.length){
     dialogue.innerHTML+=text.charAt(i);
     i++;
-    setTimeout(typeWriter,30);
+    setTimeout(typeWriter,40);
   }
 }
-typeWriter();
 
-/* PARTICLES */
-function spawnLightning(){
-  const l=document.createElement("div");
-  l.className="lightning";
-  l.style.left=Math.random()*50+"%";
-  document.body.appendChild(l);
-  setTimeout(()=>l.remove(),4000);
-}
-setInterval(spawnLightning,3000);
-
-function spawnFire(){
-  const f=document.createElement("div");
-  f.className="fire";
-  f.style.left=(50+Math.random()*50)+"%";
-  document.body.appendChild(f);
-  setTimeout(()=>f.remove(),3000);
-}
-setInterval(spawnFire,500);
-
-/* CAPTURE */
+/* Capture */
 function sayYes(){
   if(capturing) return;
   capturing=true;
   pokeball.style.display="block";
-  pokeball.style.animation="drop .8s forwards";
-  setTimeout(()=>shakeBall(1),1000);
+  pokeball.style.animation="drop 0.6s forwards";
+  setTimeout(()=>fadeToWhite(),1200);
 }
 
-function shakeBall(c){
-  if(c<=3){
-    pokeball.classList.add("shake");
-    setTimeout(()=>{
-      pokeball.classList.remove("shake");
-      setTimeout(()=>shakeBall(c+1),200);
-    },400);
-  } else {
-    showSave();
-  }
-}
-
-function showSave(){
-  saving.style.display="flex";
-  saving.innerHTML="<p id='s'>Saving...<br>Don't turn off the power.</p>";
-  let dots=0;
-  const s=document.getElementById("s");
-  const inter=setInterval(()=>{
-    dots=(dots+1)%4;
-    s.innerHTML=`Saving${".".repeat(dots)}<br>Don't turn off the power.`;
-  },500);
-
+function fadeToWhite(){
+  fade.style.opacity=1;
   setTimeout(()=>{
-    clearInterval(inter);
-    saving.innerHTML=`<p>SAVE COMPLETE<br>${girlName} was registered.</p>`;
-  },4000);
+    fade.style.opacity=0;
+    showSaving();
+  },600);
+}
+
+function showSaving(){
+  saving.style.display="flex";
+  saving.innerHTML="<p>Saving...<br>Don't turn off the power.</p>";
 
   setTimeout(()=>{
     saving.style.display="none";
-    showPokedex();
-  },6000);
+    showDex();
+  },4000);
 }
 
-function showPokedex(){
-  document.getElementById("pokedex-name").innerText=
-  `${girlName} has been added to your Pokédex!`;
-  pokedex.style.display="flex";
+function showDex(){
+  pokedex.style.display="block";
+  document.getElementById("dexText").innerHTML=
+    `${girlName}<br><br>
+     The Legendary Partner Pokémon.<br>
+     Said to appear when Truth and Ideals are in balance.`;
 }
 
+/* No button dodge */
 function moveButton(){
   if(capturing) return;
-  noBtn.style.position="absolute";
-  noBtn.style.left=Math.random()*80+"%";
-  noBtn.style.top=Math.random()*80+"%";
+  const btn=document.getElementById("noBtn");
+  btn.style.position="absolute";
+  btn.style.left=Math.random()*250+"px";
+  btn.style.top=Math.random()*200+"px";
 }
 
+/* Lightning */
+function createLightning(){
+  const bolt=document.createElement("div");
+  bolt.className="lightning";
+  bolt.style.left=Math.random()*150+"px";
+  document.querySelector(".left").appendChild(bolt);
+  setTimeout(()=>bolt.remove(),2000);
+  setTimeout(createLightning,3000);
+}
+
+/* Fire */
+function createFire(){
+  const ember=document.createElement("div");
+  ember.className="fire";
+  ember.style.left=Math.random()*150+"px";
+  document.querySelector(".right").appendChild(ember);
+  setTimeout(()=>ember.remove(),3000);
+  setTimeout(createFire,500);
+}
 </script>
 
 </body>
